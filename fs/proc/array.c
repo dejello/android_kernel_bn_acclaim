@@ -337,6 +337,14 @@ static void task_cpus_allowed(struct seq_file *m, struct task_struct *task)
 	seq_putc(m, '\n');
 }
 
+/* DEJELLO EDIT - ADDED THIS PATCH PER UBUNTU TOUCH PORTING NOTES */
+static void task_vpid(struct seq_file *m, struct task_struct *task)
+{
+	struct pid_namespace *ns = task_active_pid_ns(task);
+	seq_printf(m, "Vpid:\t%d\n", ns ? task_pid_nr_ns(task, ns) : 0);
+}
+/* END THIS PORTION OF PATCH */
+
 int proc_pid_status(struct seq_file *m, struct pid_namespace *ns,
 			struct pid *pid, struct task_struct *task)
 {
@@ -354,6 +362,9 @@ int proc_pid_status(struct seq_file *m, struct pid_namespace *ns,
 	task_cpus_allowed(m, task);
 	cpuset_task_status_allowed(m, task);
 	task_context_switch_counts(m, task);
+/* ADDED THIS FOR PATCH PER UBUNTU TOUCH PORTING NOTES */
+	task_vpid(m, task);
+/* END OF PATCH */
 	return 0;
 }
 
